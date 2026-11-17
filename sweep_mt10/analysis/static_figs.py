@@ -188,3 +188,18 @@ for i, (name, setting) in enumerate(rows):
             color=GROW_COL if ours else INK2, weight='bold' if ours else 'normal')
 fig.savefig(OUT / 'related_matrix.png', dpi=200, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
 print('matrix ok')
+
+# 8. Real MT10 renders grid (frames from render_mt10.py)
+from PIL import Image as _Image
+rd = OUT / 'mt10_renders'
+if rd.exists():
+    order = ['reach', 'push', 'pick-place', 'door-open', 'drawer-open',
+             'drawer-close', 'button-press-topdown', 'peg-insert-side', 'window-open', 'window-close']
+    fig, axes = plt.subplots(2, 5, figsize=(15, 6.1), gridspec_kw=dict(wspace=0.04, hspace=0.12))
+    for ax, name in zip(axes.flat, order):
+        im = _Image.open(rd / f'{name}-v3.png')
+        w, h = im.size
+        ax.imshow(im.crop((0, int(h * 0.06), w, int(h * 0.94))))
+        ax.set_title(name, fontsize=14, color=INK, pad=6); ax.axis('off')
+    fig.savefig(OUT / 'mt10_real.png', dpi=150, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
+    print('mt10 real grid ok')

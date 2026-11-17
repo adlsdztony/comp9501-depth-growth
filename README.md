@@ -30,12 +30,12 @@ Exploratory: fixed growth schedules (not the GKP controller), few seeds, one ben
 
 | Path | Content |
 | --- | --- |
-| `deck/COMP9501_Growth_Results_v8.pptx` | Latest deck: v7 with a related-work comparison matrix and a contribution slide. v7 = v6 plus related-work and problem-to-approach slides. v6 = v5 plus benchmark (MT10) and algorithm (PPO) slides. v5 = v4 plus 18 backup analysis slides. Earlier versions: v1 (minimal), v2 (detailed), v3 (concise). Each `deck/deck*.json` is the content source of its deck, with speaker notes |
+| `deck/COMP9501_Growth_Results_v9.pptx` | Latest deck: v8 without the contribution slide and with real MT10 task renders on the benchmark slide. v8 = v7 with a related-work comparison matrix and a contribution slide. v7 = v6 plus related-work and problem-to-approach slides. v6 = v5 plus benchmark (MT10) and algorithm (PPO) slides. v5 = v4 plus 18 backup analysis slides. Earlier versions: v1 (minimal), v2 (detailed), v3 (concise). Each `deck/deck*.json` is the content source of its deck, with speaker notes |
 | `report/` | NeurIPS-format report: `main.tex`, `refs.bib`, `neurips_2026.sty`, compiled `main.pdf` |
 | `figures/` | All rendered figures; `figures/w400/summary.json`, `figures/w128/summary.json` hold the aggregated numbers |
 | `results/all/` | One directory per run: `state.json`, `evaluations.jsonl` (train/dev/test success every 500k steps), `metrics.jsonl`, `growth_events.jsonl`, logs. Checkpoints not included. One per (width, config, seed) is used; a duplicate depth-4 seed-2 run is resolved by `aggregate.py` |
 | `sweep_mt10/` | Runner derived from `full_mt10` (`sweep_worker.py`, `run_one.py`, `modal_job.py`) |
-| `sweep_mt10/analysis/` | `aggregate.py` (data figures + summaries), `static_figs.py` (schematics, goal split, pilot), `extra_figs.py` (backup analyses into `figures/backup/`), `build_deck.py` (v1 deck), `build_deck_v2.py` (v2–v4 decks), `fetch.sh` (pull results from all hosts), `wsl_run*.sh` (local launch helpers) |
+| `sweep_mt10/analysis/` | `aggregate.py` (data figures + summaries), `static_figs.py` (schematics, goal split, pilot), `extra_figs.py` (backup analyses into `figures/backup/`), `render_mt10.py` (MuJoCo frames of the MT10 tasks, run on a machine with metaworld; output in `figures/static/mt10_renders/`), `build_deck.py` (v1 deck), `build_deck_v2.py` (v2–v4 decks), `fetch.sh` (pull results from all hosts), `wsl_run*.sh` (local launch helpers) |
 
 Reproduce figures, decks and report (Python with `matplotlib`, `numpy`, `python-pptx`, `Pillow`):
 
@@ -51,6 +51,7 @@ python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v6.pptx deck/deck_v6.json
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v7.pptx deck/deck_v7.json
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v8.pptx deck/deck_v8.json
+python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v9.pptx deck/deck_v9.json
 cd report && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
