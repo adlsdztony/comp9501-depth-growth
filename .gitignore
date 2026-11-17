@@ -12,3 +12,9 @@ modal_launch.log
 deck/qa/
 deck/draft.pptx
 deck/qa2/
+report/qa/
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
