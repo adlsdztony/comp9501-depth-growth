@@ -276,6 +276,52 @@ def compute_vs_gpu(runs):
     fig.savefig(OUT / 'compute_vs_gpu.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
 
 
+def per_task(runs):
+    fin = [r for r in runs if r['done']]
+    ks = keys_of(fin)
+    tasks = fin[0]['state']['task_names']
+    M = []
+    for k in ks:
+        rows = [r['ev'][-1]['per_task_test'] for r in fin if r['key'] == k and r['ev'][-1]['stream'] == 'final']
+        M.append(np.mean(rows, 0) * 100)
+    M = np.array(M)
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list('blue', ['#f4f8fd', '#b7d3f6', '#5598e7', '#1c5cab', '#0d366b'])
+    fig, ax = plt.subplots(figsize=(12, 0.55 * len(ks) + 1.8))
+    ax.imshow(M, cmap=cmap, vmin=0, vmax=100, aspect='auto')
+    for i in range(M.shape[0]):
+        for j in range(M.shape[1]):
+            ax.text(j, i, f'{M[i, j]:.0f}', ha='center', va='center', fontsize=11, color='white' if M[i, j] > 60 else INK)
+    ax.set_yticks(range(len(ks)), [{'grow': 'Grow late', 'growE': 'Grow early'}.get(k, f'Depth {k[1:]}') for k in ks])
+    ax.set_xticks(range(len(tasks)), [t.replace('-v3', '').replace('-v2', '') for t in tasks], rotation=35, ha='right')
+    ax.grid(False); ax.tick_params(length=0)
+    for sp in ax.spines.values(): sp.set_visible(False)
+    fig.savefig(OUT / 'per_task.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
+
+
+def growth_traj(runs):
+    fin = [r for r in runs if r['done']]
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.2), sharey=True, gridspec_kw=dict(wspace=0.08))
+    for ax, g, ref, title in [(axes[0], 'growE', 'd3', 'Grow early: +layer at 0.5M, 1M'), (axes[1], 'grow', 'd3', 'Grow late: +layer at 1M, 2M')]:
+        for r in [r for r in fin if r['key'] == 'd1']:
+            ax.plot([e['training_steps'] / 1e6 for e in r['ev']], [e['success_test'] * 100 for e in r['ev']], color=DEPTH_COL[1], lw=1.2, alpha=0.6)
+        for r in [r for r in fin if r['key'] == ref]:
+            ax.plot([e['training_steps'] / 1e6 for e in r['ev']], [e['success_test'] * 100 for e in r['ev']], color=DEPTH_COL[3], lw=1.2, alpha=0.6)
+        for r in [r for r in fin if r['key'] == g]:
+            ax.plot([e['training_steps'] / 1e6 for e in r['ev']], [e['success_test'] * 100 for e in r['ev']], color=color(g), lw=2.2)
+        for x in (r['state']['grow_at'] for r in fin if r['key'] == g):
+            for xx in x:
+                ax.axvline(xx / 1e6, color=color(g), lw=1, ls=':')
+            break
+        ax.set_title(title, fontsize=14, color=INK); ax.set_xlabel('Environment steps (M)'); ax.set_ylim(0, 100)
+    axes[0].set_ylabel('Held-out success (%)')
+    from matplotlib.lines import Line2D
+    axes[1].legend(handles=[Line2D([], [], color=DEPTH_COL[1], lw=1.5, label='Fixed depth 1 (per seed)'),
+                            Line2D([], [], color=DEPTH_COL[3], lw=1.5, label='Fixed depth 3 (per seed)'),
+                            Line2D([], [], color=INK2, lw=2.2, label='Growth run (per seed)')], loc='lower right', fontsize=11)
+    fig.savefig(OUT / 'growth_traj.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
+
+
 def main():
     runs = load()
     print(f'{len(runs)} runs, {sum(r["done"] for r in runs)} completed')
@@ -289,6 +335,7 @@ def main():
         rows = final_by_depth(sub) if any(r['done'] for r in sub) else []
         res = cost_frontier(sub) if any(r['done'] for r in sub) else {}
         compute_vs_gpu(sub)
+        per_task(sub); growth_traj(sub)
         if res:
             strategy_panel(res)
             strategy_panel(res, 'flops', 1e15, 'Total learner compute (PFLOP)', 'strategy_panel_flops.png')
