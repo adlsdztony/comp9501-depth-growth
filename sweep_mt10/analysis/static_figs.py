@@ -73,3 +73,41 @@ for a_ in axes:
     a_.spines[['top', 'right']].set_visible(False); a_.grid(axis='y', color=GRID); a_.set_axisbelow(True)
 fig.savefig(OUT / 'pilot_insertion.png', dpi=200, bbox_inches='tight'); plt.close(fig)
 print('ok')
+
+# 4. Identity insertion schematic
+def block(ax, x, y, w, h, text, fc, tc='white', sub=None):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0,rounding_size=0.08', fc=fc, ec='none'))
+    ax.text(x + w / 2, y + h / 2 + (0.09 if sub else 0), text, ha='center', va='center', color=tc, fontsize=14, weight='bold')
+    if sub:
+        ax.text(x + w / 2, y + h / 2 - 0.17, sub, ha='center', va='center', color=tc, fontsize=11)
+
+
+def arrow(ax, x0, x1, y):
+    ax.annotate('', xy=(x1, y), xytext=(x0, y), arrowprops=dict(arrowstyle='-|>', color=INK2, lw=1.6))
+
+
+fig, ax = plt.subplots(figsize=(14, 5.0))
+ax.set_xlim(0, 14.2); ax.set_ylim(-0.5, 4.5); ax.axis('off')
+KEEP = '#256abf'; HEAD = '#52514e'
+for y, new in [(2.9, False), (0.8, True)]:
+    ax.text(0.0, y + 1.0, 'After inserting a layer' if new else 'Before', fontsize=15, weight='bold', color=INK)
+    ax.text(0.3, y + 0.35, 's', fontsize=18, style='italic', ha='center', va='center', color=INK)
+    arrow(ax, 0.6, 1.1, y + 0.35)
+    block(ax, 1.1, y, 2.5, 0.7, 'Linear + ReLU', KEEP, sub='trained layers')
+    arrow(ax, 3.7, 4.25, y + 0.35)
+    ax.text(4.8, y + 0.35, 'h ≥ 0', fontsize=16, ha='center', va='center', color=INK)
+    if new:
+        arrow(ax, 5.35, 5.9, y + 0.35)
+        block(ax, 5.9, y, 3.3, 0.7, 'Identity layer + ReLU', GROW_COL, sub='W = I, no bias')
+        arrow(ax, 9.3, 9.8, y + 0.35)
+        ax.text(10.05, y + 0.35, 'h', fontsize=16, ha='center', va='center', color=INK)
+        arrow(ax, 10.3, 10.75, y + 0.35)
+    else:
+        arrow(ax, 5.35, 10.75, y + 0.35)
+    block(ax, 10.75, y, 2.1, 0.7, 'Policy head', HEAD, sub='mean, std')
+    arrow(ax, 12.95, 13.35, y + 0.35)
+    ax.text(13.8, y + 0.35, 'π(a|s)', fontsize=16, ha='center', va='center', color=INK)
+ax.text(7.1, -0.25, 'h ≥ 0  ⇒  ReLU(I·h) = h  ⇒  the policy is identical at the moment of insertion',
+        ha='center', va='center', fontsize=15, color=INK)
+fig.savefig(OUT / 'identity_schematic.png', dpi=200, bbox_inches='tight', pad_inches=0.1); plt.close(fig)
+print('schematic ok')

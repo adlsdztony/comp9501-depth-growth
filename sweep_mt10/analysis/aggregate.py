@@ -338,6 +338,72 @@ def growth_traj(runs):
     fig.savefig(OUT / 'growth_traj.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
 
 
+def cum_flops(run, step):
+    crit = run['state'].get('critic_parameters', 0)
+    return sum(100_000 * 98 * (m.get('actor_parameters', run['state']['actor_parameters']) + crit)
+               for m in run['me'] if m['training_steps'] <= step)
+
+
+def anytime_flops(runs):
+    """Held-out success of the model a strategy would pick vs. total learner FLOPs spent so far (mean over seeds)."""
+    fin = [r for r in runs if r['done']]
+    fixed = sorted({r['key'] for r in fin if not isgrow(r['key'])}, key=lambda k: int(k[1:]))
+    seeds = sorted({r['seed'] for r in fin})
+    T = max(r['state']['training_steps'] for r in fin)
+    steps = [i * 500_000 for i in range(int(T / 500_000) + 1)]
+    r1, r2 = T // 6, T // 2
+    curves_ = defaultdict(list)
+    for s in seeds:
+        by = {r['key']: r for r in fin if r['seed'] == s}
+        if not all(k in by for k in fixed):
+            continue
+        dev = lambda k, t: at(by[k], t, 'success_dev') or 0
+        tst = lambda k, t: at(by[k], t, 'success_test') or 0
+        F = {k: [cum_flops(by[k], t) for t in steps] for k in by}
+        idx = {t: i for i, t in enumerate(steps)}
+        grid = [(sum(F[k][i] for k in fixed), tst(max(fixed, key=lambda k: dev(k, t)), t)) for i, t in enumerate(steps)]
+        alive2 = sorted(fixed, key=lambda k: -dev(k, r1))[:2]
+        win = max(alive2, key=lambda k: dev(k, r2))
+        sh = []
+        for i, t in enumerate(steps):
+            if t <= r1:
+                cost, pool = sum(F[k][i] for k in fixed), fixed
+            elif t <= r2:
+                cost = sum(F[k][idx[r1]] for k in fixed) + sum(F[k][i] - F[k][idx[r1]] for k in alive2); pool = alive2
+            else:
+                cost = (sum(F[k][idx[r1]] for k in fixed) + sum(F[k][idx[r2]] - F[k][idx[r1]] for k in alive2)
+                        + F[win][i] - F[win][idx[r2]]); pool = [win]
+            sh.append((cost, tst(max(pool, key=lambda k: dev(k, t)), t)))
+        curves_['Grid search (4 depths)'].append(grid)
+        curves_['Successive halving'].append(sh)
+        for k, nm in (('d2', 'Default depth 2'), ('growE', 'Grow early'), ('grow', 'Grow late')):
+            if k in by:
+                curves_[nm].append([(F[k][i], tst(k, t)) for i, t in enumerate(steps)])
+    style = {'Grid search (4 depths)': ('#52514e', 's', 2.0), 'Successive halving': ('#008300', 'D', 2.0),
+             'Default depth 2': ('#5598e7', 'o', 1.6), 'Grow late': (GROW_COL, 'o', 2.0), 'Grow early': (GROWE_COL, 'o', 3.0)}
+    fig, ax = plt.subplots(figsize=(10, 5.4))
+    ends = []
+    for nm, cs in curves_.items():
+        c, m, lw = style[nm]
+        arr = np.array(cs)  # seeds x steps x 2
+        x = arr[:, :, 0].mean(0) / 1e15; y = arr[:, :, 1].mean(0) * 100
+        ax.plot(x, y, color=c, lw=lw, marker=m, ms=6, mec=SURF, mew=1.0, zorder=3 if nm == 'Grow early' else 2)
+        ends.append([x[-1], y[-1], nm, c])
+    ends.sort(key=lambda e: e[1])
+    for i in range(1, len(ends)):
+        if ends[i][0] < 0.3 and ends[i][1] - ends[i - 1][1] < 5.5 and ends[i - 1][0] < 0.3:
+            ends[i][1] = ends[i - 1][1] + 5.5
+    left_x = max([e[0] for e in ends if e[0] < 0.3], default=0) + 0.015
+    for x, y, nm, c in ends:
+        ax.text(left_x if x < 0.3 else x + 0.012, y, nm.replace('Default depth 2', 'Depth 2'), color=c, fontsize=12, va='center', weight='bold')
+    ax.set_xlabel('Total learner compute spent, including search (PFLOP)')
+    ax.set_ylabel('Held-out success of selected model (%)')
+    ax.set_ylim(0, 100); ax.set_xlim(0, max(e[0] for e in ends) * 1.28)
+    ax.text(0.99, 0.02, f'mean over {len(curves_["Grow early"])} seeds; points every 0.5M steps',
+            transform=ax.transAxes, ha='right', va='bottom', fontsize=10, color=INK2)
+    fig.savefig(OUT / 'anytime_flops.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
+
+
 def main():
     runs = load()
     print(f'{len(runs)} runs, {sum(r["done"] for r in runs)} completed')
@@ -351,7 +417,7 @@ def main():
         rows = final_by_depth(sub) if any(r['done'] for r in sub) else []
         res = cost_frontier(sub) if any(r['done'] for r in sub) else {}
         compute_vs_gpu(sub)
-        per_task(sub); growth_traj(sub); flops_per_run(sub)
+        per_task(sub); growth_traj(sub); flops_per_run(sub); anytime_flops(sub)
         if res:
             strategy_panel(res)
             strategy_panel(res, 'flops', 1e15, 'Total learner compute (PFLOP)', 'strategy_panel_flops.png')
