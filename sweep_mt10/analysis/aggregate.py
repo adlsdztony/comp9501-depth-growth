@@ -376,7 +376,7 @@ def anytime_flops(runs):
             sh.append((cost, tst(max(pool, key=lambda k: dev(k, t)), t)))
         curves_['Grid search (4 depths)'].append(grid)
         curves_['Successive halving'].append(sh)
-        for k, nm in (('d2', 'Default depth 2'), ('growE', 'Grow early'), ('grow', 'Grow late')):
+        for k, nm in (('growE', 'Grow early'), ('grow', 'Grow late')):
             if k in by:
                 curves_[nm].append([(F[k][i], tst(k, t)) for i, t in enumerate(steps)])
     style = {'Grid search (4 depths)': ('#52514e', 's', 2.0), 'Successive halving': ('#008300', 'D', 2.0),

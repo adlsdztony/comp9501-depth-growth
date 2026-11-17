@@ -228,7 +228,7 @@
    ],
    "accent": 0,
    "takeaway": "Search only overtakes growth after spending about twice the compute",
-   "notes": "Here the x-axis is total learner compute spent so far, including every run a search keeps alive, and the y-axis is the held-out success of the model the strategy would pick at that point using validation goals. A growing run spends its compute on a single network, so after 0.18 petaFLOP it is at 84 percent, while successive halving at the same spend is still around 60 percent and grid search lower. Successive halving needs about 0.33 petaFLOP to pass growth, and grid search reaches 89 percent only at 0.71. Committing to depth 2 follows a similar curve but ends lower, at 81 percent."
+   "notes": "Here the x-axis is total learner compute spent so far, including every run a search keeps alive, and the y-axis is the held-out success of the model the strategy would pick at that point using validation goals. A growing run spends its compute on a single network, so after 0.18 petaFLOP it is at 84 percent, while successive halving at the same spend is still around 60 percent and grid search lower. Successive halving needs about 0.33 petaFLOP to pass growth, and grid search reaches 89 percent only at 0.71."
   },
   {
    "kind": "split",
