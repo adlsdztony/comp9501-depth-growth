@@ -111,3 +111,42 @@ ax.text(7.1, -0.25, 'h ≥ 0  ⇒  ReLU(I·h) = h  ⇒  the policy is identical 
         ha='center', va='center', fontsize=15, color=INK)
 fig.savefig(OUT / 'identity_schematic.png', dpi=200, bbox_inches='tight', pad_inches=0.1); plt.close(fig)
 print('schematic ok')
+
+# 5. Benchmark: MT10 task grid
+tasks = ['reach', 'push', 'pick-place', 'door-open', 'drawer-open',
+         'drawer-close', 'button-press\ntopdown', 'peg-insert-side', 'window-open', 'window-close']
+fig, ax = plt.subplots(figsize=(12, 4.6))
+ax.set_xlim(0, 10); ax.set_ylim(0, 4.2); ax.axis('off')
+for i, t in enumerate(tasks):
+    r, c = divmod(i, 5)
+    x, y = c * 2.0 + 0.08, 2.3 - r * 2.0
+    ax.add_patch(FancyBboxPatch((x, y), 1.84, 1.6, boxstyle='round,pad=0,rounding_size=0.1', fc='#f1f4f9', ec='#c9d6ea', lw=1.2))
+    ax.text(x + 0.92, y + 1.05, f'{i + 1}', ha='center', va='center', fontsize=22, color='#256abf', weight='bold')
+    ax.text(x + 0.92, y + 0.45, t, ha='center', va='center', fontsize=12.5, color=INK)
+fig.savefig(OUT / 'mt10_tasks.png', dpi=200, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
+
+# 6. Learner: multi-task PPO loop
+fig, ax = plt.subplots(figsize=(13, 5.0))
+ax.set_xlim(0, 13); ax.set_ylim(0, 5.0); ax.axis('off')
+def box(x, y, w, h, title, sub, fc):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0,rounding_size=0.08', fc=fc, ec='none'))
+    ax.text(x + w / 2, y + h * 0.64, title, ha='center', va='center', color='white', fontsize=14, weight='bold')
+    ax.text(x + w / 2, y + h * 0.28, sub, ha='center', va='center', color='white', fontsize=11)
+def arr(x0, y0, x1, y1, rad=0.0):
+    ax.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                arrowprops=dict(arrowstyle='-|>', color=INK2, lw=1.8, connectionstyle=f'arc3,rad={rad}'))
+NAV, BLU, GRY = '#14213d', '#256abf', '#52514e'
+box(0.2, 3.0, 3.0, 1.3, '10 environments', 'one per MT10 task', GRY)
+box(4.0, 3.0, 2.6, 1.3, 'Rollout', '100k steps per iteration', BLU)
+box(7.4, 3.0, 2.4, 1.3, 'Advantages', 'GAE, γ 0.99, λ 0.97', BLU)
+box(10.6, 3.0, 2.3, 1.3, 'PPO update', '16 epochs, clip 0.2', NAV)
+arr(3.25, 3.65, 3.95, 3.65); arr(6.65, 3.65, 7.35, 3.65); arr(9.85, 3.65, 10.55, 3.65)
+box(2.2, 0.4, 4.2, 1.5, 'Actor (policy)', 'MLP width 400, depth 1–4  ← grown', GROW_COL)
+box(7.0, 0.4, 4.2, 1.5, 'Critic (value)', '3 × 400, LayerNorm, PopArt per task', GRY)
+arr(11.75, 2.95, 9.2, 1.95, rad=-0.15)
+arr(11.75, 2.95, 5.0, 1.95, rad=-0.05)
+arr(3.6, 1.95, 1.8, 2.95, rad=-0.2)
+ax.text(0.95, 2.35, 'acts in', fontsize=11, color=INK2)
+ax.text(6.5, 2.45, 'gradient steps on both networks', fontsize=11, color=INK2, ha='center')
+fig.savefig(OUT / 'ppo_learner.png', dpi=200, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
+print('benchmark/learner ok')

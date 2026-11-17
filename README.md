@@ -30,7 +30,7 @@ Exploratory: fixed growth schedules (not the GKP controller), few seeds, one ben
 
 | Path | Content |
 | --- | --- |
-| `deck/COMP9501_Growth_Results_v5.pptx` | Latest deck: v4 plus 18 backup analysis slides. v4 is the same main deck without them. Earlier versions: v1 (minimal), v2 (detailed), v3 (concise). Each `deck/deck*.json` is the content source of its deck, with speaker notes |
+| `deck/COMP9501_Growth_Results_v7.pptx` | Latest deck: v6 plus related-work and problem-to-approach slides. v6 = v5 plus benchmark (MT10) and algorithm (PPO) slides. v5 = v4 plus 18 backup analysis slides. Earlier versions: v1 (minimal), v2 (detailed), v3 (concise). Each `deck/deck*.json` is the content source of its deck, with speaker notes |
 | `report/` | NeurIPS-format report: `main.tex`, `refs.bib`, `neurips_2026.sty`, compiled `main.pdf` |
 | `figures/` | All rendered figures; `figures/w400/summary.json`, `figures/w128/summary.json` hold the aggregated numbers |
 | `results/all/` | One directory per run: `state.json`, `evaluations.jsonl` (train/dev/test success every 500k steps), `metrics.jsonl`, `growth_events.jsonl`, logs. Checkpoints not included. One per (width, config, seed) is used; a duplicate depth-4 seed-2 run is resolved by `aggregate.py` |
@@ -48,6 +48,8 @@ python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v3.pptx deck/deck_v3.json
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v4.pptx deck/deck_v4.json
 python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v5.pptx deck/deck_v5.json
+python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v6.pptx deck/deck_v6.json
+python sweep_mt10/analysis/build_deck_v2.py figures deck/COMP9501_Growth_Results_v7.pptx deck/deck_v7.json
 cd report && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
