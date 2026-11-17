@@ -1,0 +1,616 @@
+{
+ "slides": [
+  {
+   "kind": "title",
+   "title": "Grow instead of search?",
+   "subtitle": "Function-preserving depth growth as a cheap alternative to depth search for multi-task PPO on Meta-World MT10",
+   "footer": "COMP9501 Advanced Machine Learning  ·  exploratory study  ·  43 training runs, 5 seeds",
+   "notes": "Today we ask a practical question about reinforcement-learning policies: if you do not know how deep your policy network should be, can you grow it during a single training run instead of training several networks and picking the best one?"
+  },
+  {
+   "kind": "split",
+   "kicker": "Motivation",
+   "title": "Choosing network depth usually means training K networks",
+   "figures": [
+    "static/schematic_search_vs_grow.png"
+   ],
+   "fig_frac": 0.6,
+   "bullets": [
+    "Depth is a hyperparameter: too shallow underfits, too deep may waste compute",
+    "Standard answer is **search**: train one network per candidate depth, keep the best on validation",
+    "- Cost grows linearly with the number of candidates K",
+    "In RL each run is expensive: millions of simulator steps",
+    "**Growth**: start shallow, insert layers during one run, pay for one run"
+   ],
+   "takeaway": "Question: can one growing run match a searched depth at lower total cost?",
+   "notes": "The default way to deal with an unknown architecture hyperparameter is search. You train one network per depth and keep the one that does best on validation data. This multiplies the training cost by the number of candidates. In reinforcement learning every run is millions of simulator steps, so that is expensive. Growth is the alternative: start with a shallow network and add layers as training goes."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Related work",
+   "title": "Where this work sits",
+   "figures": [
+    "static/related_matrix.png"
+   ],
+   "takeaway": "We bring function-preserving growth to multi-task RL and test it against search under one compute budget",
+   "source": "Search: Jamieson & Talwalkar 2016; Li et al. 2018. PBT: Jaderberg et al. 2017. Large networks: Nauman et al. 2024 (BRO); Lee et al. 2025 (SimBa). Growth: Chen et al. 2016 (Net2Net); Evci et al. 2022 (GradMax).",
+   "notes": "How do people deal with not knowing the right network size? Search methods, from grid search to successive halving and Hyperband, train several networks and keep the best, so they pay for several runs and none of them starts small. Population-based training also runs a population. Recent RL work instead picks one large, well-regularised network such as BRO or SimBa: one run, but the size is fixed in advance and the large network is paid for from the first step. Network-growth methods such as Net2Net and GradMax start small and add capacity without changing the function, but they were developed and tested in supervised learning. Our work takes this growth idea into multi-task reinforcement learning, with a PPO policy over ten tasks, and asks whether one growing run can replace a depth search when the cost of the search is counted."
+  },
+  {
+   "kind": "cards",
+   "kicker": "Contribution",
+   "title": "What is new in this work",
+   "cards": [
+    [
+     "Growth inside an RL policy",
+     [
+      "Identity insertion in a multi-task PPO actor",
+      "Zero change to the policy at all 20 insertions"
+     ]
+    ],
+    [
+     "A fair comparison with search",
+     [
+      "Grid search and successive halving on the same runs",
+      "One FLOP budget that counts every run a search trains"
+     ]
+    ],
+    [
+     "When to grow",
+     [
+      "Growing early matches successive halving at half the compute",
+      "Growing late does not: timing is the key choice"
+     ]
+    ]
+   ],
+   "takeaway": "Grow instead of search: one run, no disruption, search-level success at half the compute",
+   "notes": "Our contribution has three parts. First, we put function-preserving growth inside a reinforcement-learning policy: identity layers inserted into a multi-task PPO actor, with the policy unchanged at every one of the twenty insertions. Second, we compare growth with search fairly: grid search and successive halving use the same runs, and all costs are counted in learner FLOPs including every run a search trains. Third, we find that timing is what matters: growing early matches successive halving at half its compute, while growing late gives no benefit."
+  },
+  {
+   "kind": "cards",
+   "kicker": "Research question",
+   "title": "What we set out to test",
+   "cards": [
+    [
+     "Can a layer be added safely?",
+     [
+      "Insert a layer mid-training without breaking the learned policy",
+      "Checked at every insertion and in the learning curves afterwards"
+     ]
+    ],
+    [
+     "Does depth matter here?",
+     [
+      "If all depths perform the same, search is unnecessary and growth is pointless",
+      "Measured by a full sweep over depth 1–4"
+     ]
+    ],
+    [
+     "Is growth cheaper than search?",
+     [
+      "Compare one growing run against grid search, successive halving, default and random depth",
+      "Cost in environment steps and learner FLOPs"
+     ]
+    ]
+   ],
+   "takeaway": "Problem framing: no known good depth in advance, and compute counts the search too",
+   "notes": "We broke the question into three parts. First, can we add a layer without destroying what the policy has already learned? Second, does depth actually matter on this benchmark, because if it does not, there is nothing to search for. Third, if it matters, is one growing run cheaper than searching, once we count the cost of the search itself."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Method",
+   "title": "Identity insertion: a new layer that changes nothing at first",
+   "figures": [
+    "static/identity_schematic.png"
+   ],
+   "bullets": [
+    "Existing weights and their Adam state are kept; the new layer starts fresh; the critic is untouched",
+    "Checked at all **20** insertions in our runs: zero change to the policy"
+   ],
+   "takeaway": "Identity insertion adds capacity without an insertion shock",
+   "notes": "We append a square linear layer initialised to the identity, followed by a ReLU, between the last hidden layer and the policy head. Its input already comes out of a ReLU and is non-negative, so the identity followed by a ReLU returns it unchanged: the policy is exactly the same at the moment of insertion. Existing weights keep their Adam state, the new layer starts with fresh optimiser state, and the critic is not changed. Our code asserts this at every insertion.",
+   "bullets_below": true
+  },
+  {
+   "kind": "split",
+   "kicker": "Benchmark",
+   "title": "Meta-World MT10: one policy for ten robot tasks",
+   "figures": [
+    "static/mt10_tasks.png"
+   ],
+   "fig_frac": 0.6,
+   "bullets": [
+    "Simulated robot arm (MuJoCo); one network solves all ten tasks",
+    "Input: 39-d state + 10-d one-hot task ID",
+    "Action: 4-d (end-effector motion + gripper)",
+    "500-step episodes; success = task-specific binary criterion",
+    "50 goal and object positions per task"
+   ],
+   "takeaway": "Tasks range from easy (reach) to contact-rich (push, peg insertion, pick-and-place)",
+   "source": "Yu et al., Meta-World, CoRL 2020",
+   "notes": "Meta-World MT10 is a standard multi-task robot-manipulation benchmark: ten tasks such as reaching, pushing, opening drawers and windows, all solved by a single policy that is told which task it is on through a one-hot ID. Each episode lasts 500 steps and counts as a success if the task's own criterion is met, for example the object reaching the goal."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Algorithm",
+   "title": "Learner: multi-task PPO",
+   "figures": [
+    "static/ppo_learner.png"
+   ],
+   "bullets_below": true,
+   "bullets": [
+    "**PPO**: repeated policy-gradient updates on fresh rollouts, with a clipped objective that keeps each update small",
+    "**PopArt**: normalises each task's value targets so tasks with large returns do not dominate the critic"
+   ],
+   "takeaway": "The same learner and budget in every run; only the actor's depth changes",
+   "source": "Schulman et al. 2017 (PPO); Hessel et al. 2019 (PopArt); implementation: TOPPO reference code (Li, 2026)",
+   "notes": "The learner is proximal policy optimisation. Ten environments, one per task, collect one hundred thousand steps; advantages are computed with GAE; then the actor and critic are updated for sixteen epochs with the clipped PPO objective. PopArt keeps the value targets of different tasks on a common scale. Every run uses this exact learner and three million steps; the only thing we change is the depth of the actor, and in growth runs, when it grows."
+  },
+  {
+   "kind": "table",
+   "kicker": "Setup",
+   "title": "Protocol: same budget, goal positions held out",
+   "rows": [
+    [
+     "Item",
+     "Setting"
+    ],
+    [
+     "Benchmark",
+     "Meta-World MT10, 10 manipulation tasks, one policy"
+    ],
+    [
+     "Algorithm",
+     "PPO + PopArt, LayerNorm critic (TOPPO reference)"
+    ],
+    [
+     "Policy",
+     "MLP actor, width 400, depth 1–4; critic 400×3"
+    ],
+    [
+     "Budget",
+     "3M environment steps per run, 100k-step rollouts"
+    ],
+    [
+     "Goals",
+     "50 variants per task: 30 train / 10 validation / 10 test"
+    ],
+    [
+     "Evaluation",
+     "Every 500k steps, 300 episodes"
+    ],
+    [
+     "Seeds",
+     "5 per configuration (width 400); 2 at width 128"
+    ],
+    [
+     "Compute",
+     "8× A6000 server, Modal T4s, RTX 4070, RTX 3050"
+    ]
+   ],
+   "table_frac": 0.56,
+   "figures": [
+    "static/goal_split.png"
+   ],
+   "bullets": [
+    "Only the actor depth or growth schedule changes between runs",
+    "Model selection uses validation goals; all reported numbers are held-out test goals"
+   ],
+   "takeaway": "Same recipe, same budget: only depth and its timing vary",
+   "notes": "Everything is held fixed except the actor depth or the growth schedule. Each task has fifty goal variants; we train on thirty, select models on ten and report on the remaining ten. Every run gets three million environment steps and is evaluated every five hundred thousand steps on train, validation and test goals."
+  },
+  {
+   "kind": "cards",
+   "kicker": "Baselines",
+   "title": "What growth competes against, and how cost is counted",
+   "cards": [
+    [
+     "Search baselines",
+     [
+      "**Grid search**: train depth 1–4 fully, pick best on validation: 12M steps",
+      "**Successive halving**: all 4 depths to 0.5M, best 2 to 1.5M, best 1 to 3M: 5.5M steps",
+      "Simulated on the logged learning curves of the same runs"
+     ]
+    ],
+    [
+     "No-search baselines",
+     [
+      "**Default depth 2**: the recipe's usual choice",
+      "**Random depth**: average over depth 1–4, the expected result of guessing",
+      "**Best depth in hindsight**: an upper reference, not achievable without search"
+     ]
+    ],
+    [
+     "Growth schedules",
+     [
+      "Start at depth 1, insert to depth 3",
+      "**Grow early**: at 0.5M and 1M steps",
+      "**Grow late**: at 1M and 2M steps",
+      "One run, 3M steps"
+     ]
+    ]
+   ],
+   "takeaway": "Cost = learner FLOPs (and environment steps) spent before a final model is chosen",
+   "notes": "We compare against two families. Search methods pay for several runs: grid search pays for four full runs; successive halving starts all four depths, cuts half at five hundred thousand steps and keeps one from one and a half million, total 5.5 million steps. We simulate it from the logged curves, so no extra training. No-search methods pay for one run but must commit to a depth: the default depth two, or a random guess. Best depth in hindsight is an upper reference."
+  },
+  {
+   "kind": "split",
+   "kicker": "Finding 1",
+   "title": "Held-out goals are not harder than training goals",
+   "figures": [
+    "w400/final_by_depth.png"
+   ],
+   "fig_frac": 0.58,
+   "bullets": [
+    "Train and held-out success differ by at most ~4 points for every configuration",
+    "Goal variants interpolate object and target positions within each task"
+   ],
+   "takeaway": "The held-out split is a sound test, but it does not make MT10 harder",
+   "notes": "One motivation for this setup was that earlier experiments only looked at training-goal success and reached above ninety percent. With held-out goals we see the same numbers within a few points. The goal variants within a task interpolate each other, so the split does not make the benchmark harder. What does make a difference is depth."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Finding 2",
+   "title": "Depth matters, mainly on the harder tasks",
+   "figures": [
+    "w400/per_task.png"
+   ],
+   "bullets_below": true,
+   "bullets": [
+    "Mean held-out success: depth 1 **64%** → depth 2 **81%** → depth 3 **84%** → depth 4 **88%**",
+    "Gains come from **peg-insert-side** (0 → 76%), **push** (22 → 88%) and **drawer-open** (40 → 100%)"
+   ],
+   "takeaway": "The wrong depth costs up to 24 points, so choosing it is worth paying for",
+   "notes": "Depth matters on this benchmark: mean held-out success rises from 64 percent with one hidden layer to 88 percent with four. Per task, six tasks are solved at every depth; the gains come from peg insertion, pushing and drawer opening. The best depth is three for two seeds and four for three."
+  },
+  {
+   "kind": "split",
+   "kicker": "Growth dynamics",
+   "title": "Growing runs never dip, they just need time at full depth",
+   "figures": [
+    "w400/growth_traj.png"
+   ],
+   "fig_frac": 0.64,
+   "bullets": [
+    "No drop at any insertion: every growth event had max output error 0",
+    "Each insert adds 160k actor parameters (21k → 182k → 342k)",
+    "Early growth leaves 2M steps at depth 3 and catches up",
+    "Late growth leaves only 1M steps and ends near depth 2"
+   ],
+   "takeaway": "When to grow matters more than whether to grow",
+   "notes": "Here are the individual seeds. Dotted lines mark the insertions. Success never drops at an insertion, consistent with the identity property. What differs is how long the network gets at its final depth: early growth has two million steps at depth three and catches up with the fixed deep networks; late growth has one million and finishes near depth two."
+  },
+  {
+   "kind": "split",
+   "kicker": "Compute budget",
+   "title": "At equal compute, a growing run is well ahead of search",
+   "figures": [
+    "w400/anytime_flops.png"
+   ],
+   "fig_frac": 0.66,
+   "stats": [
+    [
+     "84%",
+     "grow early, after 0.18 PFLOP"
+    ],
+    [
+     "≈ 60%",
+     "successive halving at the same spend"
+    ],
+    [
+     "≈ 2×",
+     "compute search needs to catch up"
+    ]
+   ],
+   "accent": 0,
+   "takeaway": "Search only overtakes growth after spending about twice the compute",
+   "notes": "Here the x-axis is total learner compute spent so far, including every run a search keeps alive, and the y-axis is the held-out success of the model the strategy would pick at that point using validation goals. A growing run spends its compute on a single network, so after 0.18 petaFLOP it is at 84 percent, while successive halving at the same spend is still around 60 percent and grid search lower. Successive halving needs about 0.33 petaFLOP to pass growth, and grid search reaches 89 percent only at 0.71."
+  },
+  {
+   "kind": "split",
+   "kicker": "Main result",
+   "title": "Grow early matches successive halving at half its compute",
+   "figures": [
+    "w400/strategy_panel_flops.png"
+   ],
+   "fig_frac": 0.64,
+   "size": 16,
+   "bullets": [
+    "Grid search: **89%** for 0.71 PFLOP (4 runs, 12M steps)",
+    "Successive halving: **85%** for 0.36 PFLOP (5.5M steps)",
+    "Grow early: **84%** for 0.18 PFLOP (1 run, 3M steps)",
+    "Beats default depth 2 (81%) and a random depth (79%)",
+    "Still **5 points** below the best fixed depth"
+   ],
+   "takeaway": "One growing run ≈ cheap search at half the compute, but not yet as good as a full search",
+   "notes": "Main result, paired by seed, with cost measured in learner FLOPs. Grid search finds the best depth, 89 percent, for 0.71 petaFLOP across four runs. Successive halving reaches 85 percent for 0.36. Growing early reaches 84 percent for 0.18, about half the compute of successive halving and a quarter of grid search, and better than committing to the default or a random depth. It is still 5 points below the best fixed depth. In environment steps the picture is the same: 3M for growing versus 5.5M and 12M."
+  },
+  {
+   "kind": "split",
+   "kicker": "Compute",
+   "title": "Growth spends its early training in a small network",
+   "figures": [
+    "w400/flops_per_run.png"
+   ],
+   "fig_frac": 0.58,
+   "size": 16,
+   "bullets": [
+    "Cost standard: **learner FLOPs** of actor + critic",
+    "- 2P per sample for rollouts, 16 × 6P for PPO epochs",
+    "Depth 4 costs **2.3×** depth 1 per run",
+    "Grow early: **0.18 PFLOP**, less than one depth-3 (0.20) or depth-4 (0.25) run",
+    "Hardware-independent, unlike wall-clock time"
+   ],
+   "takeaway": "Measured in FLOPs, a growing run is cheaper than training the final depth from the start",
+   "notes": "We use learner FLOPs as the cost standard: forward passes during rollouts plus forward and backward passes during the sixteen PPO epochs, for actor and critic. Deeper actors cost more per run. Growing early spends its first million steps in one- and two-layer networks, so a whole growing run costs less than training depth three or four from scratch. FLOPs do not depend on which GPU a run used, so runs on different hardware are comparable."
+  },
+  {
+   "kind": "split",
+   "kicker": "Negative result",
+   "title": "With a narrow actor (width 128), growth does not help",
+   "figures": [
+    "w128/strategy_panel_flops.png"
+   ],
+   "fig_frac": 0.62,
+   "size": 16,
+   "bullets": [
+    "Best fixed depth: **82%**; successive halving: **80%**",
+    "Grow early: **71%**; grow late: **66%**",
+    "Both are below a random depth (72%)",
+    "Only 2 seeds, so a warning sign rather than a conclusion"
+   ],
+   "takeaway": "Growth is not a free lunch: its benefit depends on width and schedule",
+   "notes": "We repeated the study with a narrow actor. Here growth did not help at all and ended below a random depth. We only have two seeds, so we treat this as a warning sign. It suggests the benefit of growth depends on width and on the schedule."
+  },
+  {
+   "kind": "cards",
+   "kicker": "Limitations",
+   "title": "What this study does not show",
+   "cards": [
+    [
+     "Scope",
+     [
+      "One benchmark (MT10), one algorithm (PPO)",
+      "5 seeds at width 400, 2 at width 128",
+      "3M-step budget; longer runs could change the ranking"
+     ]
+    ],
+    [
+     "Method",
+     [
+      "Fixed growth schedules, not an adaptive trigger",
+      "Successive halving is simulated from logged curves",
+      "Not the full grow–keep–prune controller"
+     ]
+    ],
+    [
+     "Measurement",
+     [
+      "Held-out goals are interpolations, not new tasks",
+      "Cost counts learner FLOPs and steps, not wall-clock time",
+      "100 held-out episodes per evaluation: about ±4 points per run"
+     ]
+    ]
+   ],
+   "takeaway": "Treat the result as evidence for early growth, not a validated method",
+   "notes": "Several limitations. It is one benchmark with five seeds. The growth schedule is fixed by hand rather than triggered by a plateau. Successive halving is simulated from the same curves. And held-out goals test interpolation, not new tasks."
+  },
+  {
+   "kind": "closing",
+   "title": "Takeaways and next steps",
+   "points": [
+    [
+     "1",
+     "Identity insertion grows a policy safely",
+     "Zero change at all 20 insertions, no success dip afterwards"
+    ],
+    [
+     "2",
+     "Depth matters on MT10",
+     "64% → 88% from depth 1 to 4; held-out goals add no difficulty"
+    ],
+    [
+     "3",
+     "Grow early ≈ successive halving at half the compute",
+     "84% vs 85%, but 5 points below the best depth; no gain at width 128"
+    ],
+    [
+     "4",
+     "Next: decide when to grow",
+     "Plateau-triggered growth, growing beyond depth 3, more seeds, MT50"
+    ]
+   ],
+   "notes": "To summarise: identity insertion lets a policy grow without breaking it; depth matters on this benchmark; and growing early gives search-level performance for the price of one run, though not best-depth performance. The natural next step is to decide when to grow adaptively, for example when learning plateaus."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Grow early against each baseline, paired by seed",
+   "figures": [
+    "backup/m1_paired_differences.png"
+   ],
+   "takeaway": "Better than a random depth and late growth; level with successive halving; 5 points below the best depth",
+   "notes": "Differences in held-out success between grow early and each baseline within the same seed. Bars are 95% intervals over five seeds. Only differences whose interval excludes zero should be read as real."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Results per seed",
+   "figures": [
+    "backup/m2_per_seed.png"
+   ],
+   "takeaway": "Successive halving varies most across seeds (78–92%); grow early stays within 80–90%",
+   "notes": "Each column is one seed. Successive halving is excellent when it keeps the right depth and poor when it cuts it early."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Rank within each seed",
+   "figures": [
+    "backup/m3_ranks.png"
+   ],
+   "takeaway": "Mean rank: grid search 1.3, grow early 2.8, successive halving 3.0",
+   "notes": "Ranks of the strategies inside each seed, 1 is best. Grid search is the reference at four times the cost."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Gap to the best depth",
+   "figures": [
+    "backup/m4_regret.png"
+   ],
+   "takeaway": "Grow early loses 5.0 points on average; successive halving 3.8 but up to 12",
+   "notes": "Regret relative to the best depth in hindsight, per seed. Successive halving has a lower mean but a much wider spread."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "No successive-halving variant matches grow early at its compute",
+   "figures": [
+    "backup/m5_sh_variants.png"
+   ],
+   "takeaway": "All 24 schedules cost at least 0.29 PFLOP; grow early costs 0.18",
+   "notes": "We varied the first cut from 0.5 to 2 million steps, how many depths survive it, and when the second cut happens. None of the 24 variants is both as cheap and as accurate as grow early."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Even a two-depth search costs more than one growing run",
+   "figures": [
+    "backup/m6_grid_subsets.png"
+   ],
+   "takeaway": "Every multi-depth search costs at least 0.26 PFLOP, versus 0.18 for grow early",
+   "notes": "Grid search over every subset of the four depths, selected by validation. Single depths are shown for reference, but choosing one requires knowing it in advance."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "What each strategy holds at a fixed compute budget",
+   "figures": [
+    "backup/m7_equal_budget.png"
+   ],
+   "takeaway": "Up to 0.25 PFLOP the growing run holds the best model; search pulls ahead only at 0.36 (85% vs 84%)",
+   "notes": "For each budget, the held-out success of the model each strategy holds at that spend, its latest evaluation within the budget."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Compute needed to reach a success level",
+   "figures": [
+    "backup/m8_compute_to_threshold.png"
+   ],
+   "takeaway": "Growth reaches each level with about 2–4× less compute than search",
+   "notes": "Learner compute until a strategy first holds a model at the given held-out success. Committing to depth 2 is also cheap but reaches 80% in only 3 of 5 seeds."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Where grow early gains and loses, per task",
+   "figures": [
+    "backup/m9_per_task_diff.png"
+   ],
+   "takeaway": "Its gap to the best depth comes almost entirely from push (−34 points)",
+   "notes": "Per-task differences in held-out success, averaged over seeds. Blue means grow early is better."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Selecting by validation goals is reliable",
+   "figures": [
+    "backup/m10_validation_vs_test.png"
+   ],
+   "takeaway": "Validation and held-out success correlate at r = 0.99; grid search found the best depth in 5 of 5 seeds",
+   "notes": "Every evaluation of every width-400 run. Model selection on validation goals transfers to the held-out goals."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "The same comparison in environment steps",
+   "figures": [
+    "backup/m11_anytime_steps.png"
+   ],
+   "takeaway": "Growth reaches 84% within 3M steps; successive halving needs about 5M, grid search about 10M",
+   "notes": "Same anytime comparison as the compute-budget slide, with total environment steps on the x-axis."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · main result",
+   "title": "Which depth each search picks",
+   "figures": [
+    "backup/m12_search_picks.png"
+   ],
+   "takeaway": "Successive halving cut the best depth early in seeds 3 and 4",
+   "notes": "Depth selected per seed and its held-out success. Successive halving decides on short, noisy curves."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Training vs held-out goals for all 43 runs",
+   "figures": [
+    "backup/e1_train_vs_heldout.png"
+   ],
+   "takeaway": "Every run lies close to the diagonal",
+   "notes": "Final training-goal versus held-out success for every run, both widths."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Seed variability by configuration",
+   "figures": [
+    "backup/e2_seed_variability.png"
+   ],
+   "takeaway": "Depth 1 varies most (sd 8.2 points); the others 3–5 points",
+   "notes": "Final held-out success of each seed."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Learning speed",
+   "figures": [
+    "backup/e3_learning_speed.png"
+   ],
+   "takeaway": "Depth 3 reaches 70% at 1.5M steps; grow early at 1.9M; grow late at 2.5M",
+   "notes": "Environment steps until held-out success first reaches 50 or 70 percent, mean over seeds."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Growth events",
+   "figures": [
+    "backup/e4_growth_events.png"
+   ],
+   "takeaway": "Held-out success rose in the 0.5M steps after all 20 insertions",
+   "notes": "Left: actor size over training for both schedules. Right: change in held-out success over the half million steps after each insertion. This shows there was no collapse; it does not isolate the effect of the insertion from ordinary learning."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Hard tasks over training",
+   "figures": [
+    "backup/e5_hard_tasks.png"
+   ],
+   "takeaway": "Depth 4 separates on push; pick-place stays near zero for every configuration",
+   "notes": "Held-out success on the four tasks that are not solved by every network, mean over seeds."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup · earlier findings",
+   "title": "Width 400 vs width 128",
+   "figures": [
+    "backup/e6_width.png"
+   ],
+   "takeaway": "At width 128 both growth schedules end below every fixed depth of 2 or more",
+   "notes": "Final held-out success by depth for both widths, with the growth runs that end at depth 3."
+  },
+  {
+   "kind": "figure",
+   "kicker": "Backup",
+   "title": "Learning curves on training and validation goals",
+   "figures": [
+    "w400/curves_success_train.png",
+    "w400/curves_success_dev.png"
+   ],
+   "notes": "Backup. Training-goal and validation-goal curves look the same as the held-out curves."
+  }
+ ]
+}

@@ -150,3 +150,41 @@ ax.text(0.95, 2.35, 'acts in', fontsize=11, color=INK2)
 ax.text(6.5, 2.45, 'gradient steps on both networks', fontsize=11, color=INK2, ha='center')
 fig.savefig(OUT / 'ppo_learner.png', dpi=200, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
 print('benchmark/learner ok')
+
+# 7. Related-work comparison matrix
+rows = [('Grid / random search', 'any'),
+        ('Successive halving, Hyperband', 'any'),
+        ('Population-based training', 'RL, supervised'),
+        ('Large regularised network (BRO, SimBa)', 'RL'),
+        ('Network growth (Net2Net, GradMax)', 'supervised'),
+        ('Ours: identity growth in PPO', 'multi-task RL')]
+cols = ['One training\nrun', 'Starts\nsmall', 'Grows during\ntraining', 'Keeps policy\nat insertion', 'Studied in']
+M = [['no', 'no', 'no', '–'], ['no', 'no', 'no', '–'], ['no', 'no', 'no', '–'],
+     ['yes', 'no', 'no', '–'], ['yes', 'yes', 'yes', 'yes'], ['yes', 'yes', 'yes', 'yes']]
+fig, ax = plt.subplots(figsize=(14.5, 5.6))
+ax.set_xlim(0, 14.2); ax.set_ylim(0, len(rows) + 1.2); ax.axis('off')
+X0, CW = 5.1, 1.82
+for j, c in enumerate(cols):
+    ax.text(X0 + j * CW + CW / 2, len(rows) + 0.55, c, ha='center', va='center', fontsize=12, color=INK, weight='bold')
+for i, (name, setting) in enumerate(rows):
+    y = len(rows) - 1 - i
+    ours = name.startswith('Ours')
+    if ours:
+        ax.add_patch(FancyBboxPatch((0.05, y + 0.08), 14.1, 0.84, boxstyle='round,pad=0,rounding_size=0.08',
+                                    fc='#fde8df', ec=GROW_COL, lw=1.6))
+    elif i % 2 == 0:
+        ax.add_patch(plt.Rectangle((0.05, y + 0.08), 14.1, 0.84, fc='#f4f6fa', ec='none'))
+    ax.text(0.25, y + 0.5, name, va='center', fontsize=13, color=INK, weight='bold' if ours else 'normal')
+    for j, v in enumerate(M[i]):
+        cx = X0 + j * CW + CW / 2
+        if v == 'yes':
+            ax.scatter([cx], [y + 0.5], s=620, color=GROW_COL if ours else '#256abf', zorder=3)
+            ax.text(cx, y + 0.5, '✓', ha='center', va='center', fontsize=13, color='white', weight='bold', zorder=4)
+        elif v == 'no':
+            ax.scatter([cx], [y + 0.5], s=620, facecolor='white', edgecolor='#b9b8b3', linewidth=1.4, zorder=3)
+        else:
+            ax.text(cx, y + 0.5, 'n/a', ha='center', va='center', fontsize=11, color='#9a9994')
+    ax.text(X0 + 4 * CW + CW / 2, y + 0.5, setting, ha='center', va='center', fontsize=12,
+            color=GROW_COL if ours else INK2, weight='bold' if ours else 'normal')
+fig.savefig(OUT / 'related_matrix.png', dpi=200, bbox_inches='tight', pad_inches=0.05); plt.close(fig)
+print('matrix ok')
