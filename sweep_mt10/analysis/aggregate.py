@@ -344,7 +344,7 @@ def cum_flops(run, step):
                for m in run['me'] if m['training_steps'] <= step)
 
 
-def anytime_flops(runs):
+def anytime_flops(runs, extra=(), fname='anytime_flops.png'):
     """Held-out success of the model a strategy would pick vs. total learner FLOPs spent so far (mean over seeds)."""
     fin = [r for r in runs if r['done']]
     fixed = sorted({r['key'] for r in fin if not isgrow(r['key'])}, key=lambda k: int(k[1:]))
@@ -376,32 +376,40 @@ def anytime_flops(runs):
             sh.append((cost, tst(max(pool, key=lambda k: dev(k, t)), t)))
         curves_['Grid search (4 depths)'].append(grid)
         curves_['Successive halving'].append(sh)
-        for k, nm in (('growE', 'Grow early'), ('grow', 'Grow late')):
+        for k, nm in (('growE', 'Grow early'), ('grow', 'Grow late')) + tuple(extra):
             if k in by:
                 curves_[nm].append([(F[k][i], tst(k, t)) for i, t in enumerate(steps)])
     style = {'Grid search (4 depths)': ('#52514e', 's', 2.0), 'Successive halving': ('#008300', 'D', 2.0),
-             'Default depth 2': ('#5598e7', 'o', 1.6), 'Grow late': (GROW_COL, 'o', 2.0), 'Grow early': (GROWE_COL, 'o', 3.0)}
+             'Default depth 2': ('#5598e7', 'o', 1.6), 'Depth 4': ('#0d366b', 'o', 1.8),
+             'Grow late': (GROW_COL, 'o', 2.0), 'Grow early': (GROWE_COL, 'o', 3.0)}
     fig, ax = plt.subplots(figsize=(10, 5.4))
     ends = []
     for nm, cs in curves_.items():
         c, m, lw = style[nm]
         arr = np.array(cs)  # seeds x steps x 2
         x = arr[:, :, 0].mean(0) / 1e15; y = arr[:, :, 1].mean(0) * 100
-        ax.plot(x, y, color=c, lw=lw, marker=m, ms=6, mec=SURF, mew=1.0, zorder=3 if nm == 'Grow early' else 2)
+        ax.plot(x, y, color=c, lw=lw, marker=m, ms=6, mec=SURF, mew=1.0, zorder=3 if nm == 'Grow early' else 2,
+                label=nm.replace('Default depth 2', 'Depth 2') + (' (single run)' if nm == 'Depth 4' else ''))
         ends.append([x[-1], y[-1], nm, c])
-    ends.sort(key=lambda e: e[1])
-    for i in range(1, len(ends)):
-        if ends[i][0] < 0.3 and ends[i][1] - ends[i - 1][1] < 5.5 and ends[i - 1][0] < 0.3:
-            ends[i][1] = ends[i - 1][1] + 5.5
-    left_x = max([e[0] for e in ends if e[0] < 0.3], default=0) + 0.015
-    for x, y, nm, c in ends:
-        ax.text(left_x if x < 0.3 else x + 0.012, y, nm.replace('Default depth 2', 'Depth 2'), color=c, fontsize=12, va='center', weight='bold')
+    if extra:  # crowded left cluster: use a legend instead of direct labels
+        order = ['Grow early', 'Grow late'] + [nm for _, nm in extra] + ['Successive halving', 'Grid search (4 depths)']
+        h, l = ax.get_legend_handles_labels()
+        idx = [next(i for i, ll in enumerate(l) if ll.startswith(o.replace('Default depth 2', 'Depth 2'))) for o in order]
+        ax.legend([h[i] for i in idx], [l[i] for i in idx], loc='center right', fontsize=12)
+    else:
+        ends.sort(key=lambda e: e[1])
+        for i in range(1, len(ends)):
+            if ends[i][0] < 0.3 and ends[i][1] - ends[i - 1][1] < 5.5 and ends[i - 1][0] < 0.3:
+                ends[i][1] = ends[i - 1][1] + 5.5
+        left_x = max([e[0] for e in ends if e[0] < 0.3], default=0) + 0.015
+        for x, y, nm, c in ends:
+            ax.text(left_x if x < 0.3 else x + 0.012, y, nm.replace('Default depth 2', 'Depth 2'), color=c, fontsize=12, va='center', weight='bold')
     ax.set_xlabel('Total learner compute spent, including search (PFLOP)')
     ax.set_ylabel('Held-out success of selected model (%)')
     ax.set_ylim(0, 100); ax.set_xlim(0, max(e[0] for e in ends) * 1.28)
     ax.text(0.99, 0.02, f'mean over {len(curves_["Grow early"])} seeds; points every 0.5M steps',
             transform=ax.transAxes, ha='right', va='bottom', fontsize=10, color=INK2)
-    fig.savefig(OUT / 'anytime_flops.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
+    fig.savefig(OUT / fname, dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
 
 
 def main():
@@ -417,7 +425,7 @@ def main():
         rows = final_by_depth(sub) if any(r['done'] for r in sub) else []
         res = cost_frontier(sub) if any(r['done'] for r in sub) else {}
         compute_vs_gpu(sub)
-        per_task(sub); growth_traj(sub); flops_per_run(sub); anytime_flops(sub)
+        per_task(sub); growth_traj(sub); flops_per_run(sub); anytime_flops(sub); anytime_flops(sub, (('d4', 'Depth 4'),), 'anytime_flops_with_d4.png')
         if res:
             strategy_panel(res)
             strategy_panel(res, 'flops', 1e15, 'Total learner compute (PFLOP)', 'strategy_panel_flops.png')
