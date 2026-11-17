@@ -1,0 +1,291 @@
+{
+  "width": 128,
+  "runs": [
+    {
+      "dir": "lab_fixed_w128_d1_s2",
+      "key": "d1",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.57,
+      "final_train": 0.6,
+      "final_dev": 0.61,
+      "learner_gpu_s": 1017.2604486303171,
+      "elapsed_s": 3425.078506588,
+      "flops": 102716838000000.0
+    },
+    {
+      "dir": "lab_fixed_w128_d2_s2",
+      "key": "d2",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.76,
+      "final_train": 0.76,
+      "final_dev": 0.74,
+      "learner_gpu_s": 594.3359704944305,
+      "elapsed_s": 2448.214568437,
+      "flops": 107571366000000.0
+    },
+    {
+      "dir": "lab_fixed_w128_d3_s2",
+      "key": "d3",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.84,
+      "final_train": 0.85,
+      "final_dev": 0.86,
+      "learner_gpu_s": 778.9182051329408,
+      "elapsed_s": 2657.183380202,
+      "flops": 112425894000000.0
+    },
+    {
+      "dir": "lab_fixed_w128_d4_s2",
+      "key": "d4",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.73,
+      "final_train": 0.74,
+      "final_dev": 0.74,
+      "learner_gpu_s": 798.1393713980215,
+      "elapsed_s": 2664.586691293,
+      "flops": 117280422000000.0
+    },
+    {
+      "dir": "lab_grow_w128_d1_g1000k-2000k_s2",
+      "key": "grow",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.72,
+      "final_train": 0.72,
+      "final_dev": 0.72,
+      "learner_gpu_s": 1033.563831690466,
+      "elapsed_s": 3432.908996442,
+      "flops": 107533734000000.0
+    },
+    {
+      "dir": "lab_grow_w128_d1_g500k-1000k_s1",
+      "key": "growE",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.7,
+      "final_train": 0.71,
+      "final_dev": 0.71,
+      "learner_gpu_s": 746.2833538687555,
+      "elapsed_s": 2615.861875411,
+      "flops": 109942182000000.0
+    },
+    {
+      "dir": "lab_grow_w128_d1_g500k-1000k_s2",
+      "key": "growE",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.72,
+      "final_train": 0.77,
+      "final_dev": 0.74,
+      "learner_gpu_s": 775.0092263849219,
+      "elapsed_s": 2674.503849881,
+      "flops": 109942182000000.0
+    },
+    {
+      "dir": "modal_fixed_w128_d1_s1",
+      "key": "d1",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.56,
+      "final_train": 0.59,
+      "final_dev": 0.59,
+      "learner_gpu_s": 640.9618854578866,
+      "elapsed_s": 3715.377381665,
+      "flops": 102716838000000.0
+    },
+    {
+      "dir": "modal_fixed_w128_d2_s1",
+      "key": "d2",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.73,
+      "final_train": 0.75,
+      "final_dev": 0.73,
+      "learner_gpu_s": 684.3891420048167,
+      "elapsed_s": 3827.740300631,
+      "flops": 107571366000000.0
+    },
+    {
+      "dir": "modal_fixed_w128_d3_s1",
+      "key": "d3",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.76,
+      "final_train": 0.81,
+      "final_dev": 0.78,
+      "learner_gpu_s": 705.6954394869392,
+      "elapsed_s": 3858.754919706,
+      "flops": 112425894000000.0
+    },
+    {
+      "dir": "modal_grow_w128_d1_g1000k-2000k_s1",
+      "key": "grow",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.6,
+      "final_train": 0.6,
+      "final_dev": 0.6,
+      "learner_gpu_s": 636.695680035461,
+      "elapsed_s": 3593.405399641,
+      "flops": 107533734000000.0
+    },
+    {
+      "dir": "pro16_fixed_w128_d1_s3",
+      "key": "d1",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.68,
+      "final_train": 0.68,
+      "final_dev": 0.69,
+      "learner_gpu_s": 553.5129642318934,
+      "elapsed_s": 2086.781969404,
+      "flops": 102716838000000.0
+    },
+    {
+      "dir": "wsl_fixed_w128_d4_s1",
+      "key": "d4",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.81,
+      "final_train": 0.83,
+      "final_dev": 0.79,
+      "learner_gpu_s": 1206.711650632073,
+      "elapsed_s": 2674.640093063,
+      "flops": 117280422000000.0
+    }
+  ],
+  "final_by_key": [
+    {
+      "key": "d1",
+      "train": 62.333333333333336,
+      "test": 60.333333333333336,
+      "n": 3
+    },
+    {
+      "key": "d2",
+      "train": 75.5,
+      "test": 74.5,
+      "n": 2
+    },
+    {
+      "key": "d3",
+      "train": 83.0,
+      "test": 80.0,
+      "n": 2
+    },
+    {
+      "key": "d4",
+      "train": 78.5,
+      "test": 77.0,
+      "n": 2
+    },
+    {
+      "key": "grow",
+      "train": 66.0,
+      "test": 66.0,
+      "n": 2
+    },
+    {
+      "key": "growE",
+      "train": 74.0,
+      "test": 71.0,
+      "n": 2
+    }
+  ],
+  "strategies": {
+    "Grid search (4 runs)": {
+      "n": 2,
+      "test": 0.825,
+      "steps": 12000000.0,
+      "gpu_s": 3188.65399565571,
+      "flops": 439994520000000.0,
+      "picks": [
+        "d4",
+        "d3"
+      ]
+    },
+    "Successive halving": {
+      "n": 2,
+      "test": 0.8,
+      "steps": 5500000.0,
+      "gpu_s": 1412.6200605354777,
+      "flops": 204495963000000.0,
+      "picks": [
+        "d3",
+        "d3"
+      ]
+    },
+    "Best depth (oracle)": {
+      "n": 2,
+      "test": 0.825,
+      "steps": 3000000.0,
+      "gpu_s": 788.5287882654811,
+      "flops": 114853158000000.0,
+      "picks": [
+        "d4",
+        "d3"
+      ]
+    },
+    "Random depth": {
+      "n": 2,
+      "test": 0.72,
+      "steps": 3000000.0,
+      "gpu_s": 797.1634989139275,
+      "flops": 109998630000000.0,
+      "picks": [
+        "avg",
+        "avg"
+      ]
+    },
+    "Default depth 2": {
+      "n": 2,
+      "test": 0.745,
+      "steps": 3000000.0,
+      "gpu_s": 594.3359704944305,
+      "flops": 107571366000000.0,
+      "picks": [
+        "d2",
+        "d2"
+      ]
+    },
+    "Growth @1M,2M": {
+      "n": 2,
+      "test": 0.6599999999999999,
+      "steps": 3000000.0,
+      "gpu_s": 1033.563831690466,
+      "flops": 107533734000000.0,
+      "picks": [
+        "grow",
+        "grow"
+      ]
+    },
+    "Growth @0.5M,1M": {
+      "n": 2,
+      "test": 0.71,
+      "steps": 3000000.0,
+      "gpu_s": 760.6462901268387,
+      "flops": 109942182000000.0,
+      "picks": [
+        "growE",
+        "growE"
+      ]
+    }
+  }
+}

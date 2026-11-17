@@ -1,0 +1,1 @@
+{"phase": "development", "method": "ordinary", "run_id": "ordinary", "variant": "fresh_state_insert_v1", "seed": 17701, "benchmark_seed": 17702, "insertion_seed": 17703, "training_steps_cap": 299997, "assessment_goals_per_task": 20, "final_assessment_reserve_s": 130, "cleanup_reserve_s": 15, "author_config": "configs/learner.yaml", "learning_rate": 0.0003}

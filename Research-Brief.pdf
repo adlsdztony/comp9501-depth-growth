@@ -1,0 +1,120 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /FR 3 0 R /FB 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 3431 >>
+stream
+0.98 0.98 0.97 rg 0 0 612 792 re f
+0.09 0.17 0.25 rg 0 638 612 154 re f
+BT /FB 10 Tf 0.42 0.84 0.76 rg 46 755 Td (COMP9501  /  INDEPENDENT RESEARCH KIT) Tj ET
+BT /FB 26 Tf 1 1 1 rg 46 710 Td (When should an RL policy grow deeper?) Tj ET
+BT /FR 11 Tf 0.84 0.89 0.93 rg 47 674 Td (Policy-preserving depth growth in Meta-World PPO) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 605 Td (The question) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 580 Td (Can we add capacity without breaking a competent policy, and does the timing of growth) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 564 Td (change how that policy learns? The three-task study tests the first question. The full) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 548 Td (MT10 protocol separates early from late growth.) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 510 Td (Why the identity insertion works) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 484 Td (Insert a bias-free Linear\(W, W\) layer initialized to the identity, followed by ReLU.) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 468 Td (After a ReLU, hidden activations are nonnegative, so ReLU\(Ih\) = h. The same actor head) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 452 Td (and standard deviation therefore give the same initial policy. This equivalence is at) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 436 Td (insertion only; later parameter updates need not preserve it.) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 400 Td (Observed pilot  /  one seed, three tasks) Tj ET
+0.88 0.92 0.93 rg 46 359 520 28 re f
+BT /FB 10 Tf 0.12 0.19 0.27 rg 56 369 Td (Continuation) Tj ET
+BT /FB 10 Tf 0.12 0.19 0.27 rg 220 369 Td (Immediate) Tj ET
+BT /FB 10 Tf 0.12 0.19 0.27 rg 339 369 Td (+299,997 transitions) Tj ET
+BT /FB 10 Tf 0.12 0.19 0.27 rg 489 369 Td (KL at fork) Tj ET
+0.94 0.95 0.94 rg 46 329 520 23 re f
+BT /FR 11 Tf 0.12 0.19 0.27 rg 56 336 Td (Keep) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 220 336 Td (33 / 60) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 339 336 Td (40 / 60) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 489 336 Td (0.000) Tj ET
+BT /FB 11 Tf 0.12 0.19 0.27 rg 56 309 Td (Identity insert) Tj ET
+BT /FB 11 Tf 0.12 0.19 0.27 rg 220 309 Td (33 / 60) Tj ET
+BT /FB 11 Tf 0.12 0.19 0.27 rg 339 309 Td (40 / 60) Tj ET
+BT /FB 11 Tf 0.12 0.19 0.27 rg 489 309 Td (0.000) Tj ET
+0.94 0.95 0.94 rg 46 275 520 23 re f
+BT /FR 11 Tf 0.12 0.19 0.27 rg 56 282 Td (Ordinary insert) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 220 282 Td (0 / 60) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 339 282 Td (20 / 60) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 489 282 Td (1.213) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 246 Td (Seed 17701. Reach, button press top-down and drawer open, with 20 fixed held-out goal) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 230 Td (definitions per task. KL is measured on a common probe. All arms fork from the same) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 214 Td (trusted learner checkpoint, not a simulator snapshot.) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 172 Td (The result isolates a much smaller insertion shock for identity initialization. It shows) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 156 Td (neither a benefit over keeping depth at this horizon nor generalization to new tasks. The) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 140 Td (ordinary arm demonstrates disruption in this setup, not a universal failure of random) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 124 Td (growth.) Tj ET
+BT /FB 9 Tf 0.12 0.19 0.27 rg 46 40 Td (RESEARCH BRIEF  /  01) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /FR 3 0 R /FB 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 3029 >>
+stream
+0.98 0.98 0.97 rg 0 0 612 792 re f
+0.09 0.17 0.25 rg 0 638 612 154 re f
+BT /FB 10 Tf 0.42 0.84 0.76 rg 46 755 Td (COMP9501  /  FOLLOW-UP PROTOCOL) Tj ET
+BT /FB 26 Tf 1 1 1 rg 46 710 Td (Run the matched timing comparison) Tj ET
+BT /FR 11 Tf 0.84 0.89 0.93 rg 47 674 Td (Full MT10 study design   |   no end-to-end findings in this kit) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 604 Td (Hold the comparison fixed) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 578 Td (For each of seeds 17711, 17712 and 17713, train a new depth-2, width-400 parent for 3M) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 562 Td (environment transitions. Reuse that parent checkpoint across all arms. Every child has a) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 546 Td (1M-transition cap with the same PPO data and evaluation protocol.) Tj ET
+0.89 0.94 0.93 rg 46 500 520 27 re f
+BT /FB 10 Tf 0.12 0.19 0.27 rg 57 508 Td (KEEP) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 151 508 Td (Stay at depth 2.) Tj ET
+0.89 0.94 0.93 rg 46 466 520 27 re f
+BT /FB 10 Tf 0.12 0.19 0.27 rg 57 474 Td (EARLY) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 151 474 Td (Insert an identity/ReLU block at the fork.) Tj ET
+0.89 0.94 0.93 rg 46 432 520 27 re f
+BT /FB 10 Tf 0.12 0.19 0.27 rg 57 440 Td (LATE) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 151 440 Td (Insert the same block after 300k child transitions.) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 377 Td (Use 30 train, 10 development and 10 test goal definitions per task. The fixed test panel) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 361 Td (totals 100 episodes. Compare the fork, the 300k boundary and the endpoint. Check) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 345 Td (Keep/Late equality before growth, preserve existing Adam state across insertion, and) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 329 Td (report elapsed time and actual updates alongside environment steps.) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 295 Td (Interpretation checks) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 270 Td (The final grown-arm layer bypass measures reliance on the inserted layer at that) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 254 Td (checkpoint. It is a post-training intervention, not the same as training without the) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 238 Td (layer. Keep exploratory adaptive growth or pruning as a separate test. This protocol does) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 222 Td (not establish that a GKP selector is better.) Tj ET
+BT /FB 17 Tf 0.12 0.19 0.27 rg 46 186 Td (First run) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 162 Td (Run the documented CPU smoke first. The frozen runner previously completed 1,000 real) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 146 Td (environment transitions and 64 Adam updates in smoke mode. Only then start GPU runs. Keep) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 130 Td (failed/partial runs visible with their actual budgets and do not count them as completed) Tj ET
+BT /FR 11 Tf 0.12 0.19 0.27 rg 46 114 Td (comparisons.) Tj ET
+BT /FB 9 Tf 0.12 0.19 0.27 rg 46 40 Td (RESEARCH BRIEF  /  02) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000266 00000 n 
+0000000402 00000 n 
+0000003884 00000 n 
+0000004020 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7100
+%%EOF

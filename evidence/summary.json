@@ -1,0 +1,23 @@
+{
+  "keep": {
+    "kl": 0.0,
+    "sha": "be837b80b2eaf3a2d5cd5e31ec923f6599be6809972eb08a0f6a403c1b085651",
+    "success0": 0.55,
+    "success300k": 0.6666666666666666,
+    "steps": 299997
+  },
+  "identity": {
+    "kl": 0.0,
+    "sha": "be837b80b2eaf3a2d5cd5e31ec923f6599be6809972eb08a0f6a403c1b085651",
+    "success0": 0.55,
+    "success300k": 0.6666666666666666,
+    "steps": 299997
+  },
+  "ordinary": {
+    "kl": 1.2127224206924438,
+    "sha": "be837b80b2eaf3a2d5cd5e31ec923f6599be6809972eb08a0f6a403c1b085651",
+    "success0": 0.0,
+    "success300k": 0.3333333333333333,
+    "steps": 299997
+  }
+}

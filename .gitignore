@@ -1,0 +1,13 @@
+.anavenv/
+mt_tmp/
+__pycache__/
+*.pt
+# raw per-host pulls duplicate results/all
+results/lab/
+results/pro16/
+results/wsl/
+results/modal/
+results/modal_tgz/
+modal_launch.log
+deck/qa/
+deck/draft.pptx

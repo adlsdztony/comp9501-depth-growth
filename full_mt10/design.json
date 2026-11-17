@@ -1,0 +1,22 @@
+{
+  "campaign": "fresh_full_mt10_timing_20261117_v1",
+  "seed_choices": [17711, 17712, 17713],
+  "benchmark_seed": 17719,
+  "parent_steps": 3000000,
+  "train_steps": 1000000,
+  "grow_after_steps": 300000,
+  "rollout_per_quantum": 100000,
+  "width": 400,
+  "parent_depth": 2,
+  "grown_depth": 3,
+  "task_count": 10,
+  "train_goal_indices": [0, 30],
+  "development_goal_indices": [30, 40],
+  "test_goal_indices": [40, 50],
+  "with_growth_branch": ["now", "later"],
+  "arm_order": ["parent", "keep", "later", "now"],
+  "assessment_goal_count_per_task": 10,
+  "strict_checkpoint_restart": true,
+  "paired_prefix_expected_equal": true,
+  "optional_protected_is_not_part_of_this_sealed_study": true
+}

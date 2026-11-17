@@ -1,0 +1,533 @@
+{
+  "width": 400,
+  "runs": [
+    {
+      "dir": "lab_fixed_w400_d1_s1",
+      "key": "d1",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.6,
+      "final_train": 0.6,
+      "final_dev": 0.61,
+      "learner_gpu_s": 922.3911886608694,
+      "elapsed_s": 3375.664057169,
+      "flops": 107035110000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d1_s4",
+      "key": "d1",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.7,
+      "final_train": 0.7,
+      "final_dev": 0.7,
+      "learner_gpu_s": 571.0431961758295,
+      "elapsed_s": 2412.096136935,
+      "flops": 107035110000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d1_s5",
+      "key": "d1",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.52,
+      "final_train": 0.52,
+      "final_dev": 0.53,
+      "learner_gpu_s": 547.2372788161738,
+      "elapsed_s": 2397.033725495,
+      "flops": 107035110000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d2_s1",
+      "key": "d2",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.86,
+      "final_train": 0.85,
+      "final_dev": 0.85,
+      "learner_gpu_s": 979.8141824876657,
+      "elapsed_s": 3446.322052873,
+      "flops": 154192710000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d2_s4",
+      "key": "d2",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.79,
+      "final_train": 0.8,
+      "final_dev": 0.79,
+      "learner_gpu_s": 754.1104166788282,
+      "elapsed_s": 2618.631159558,
+      "flops": 154192710000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d2_s5",
+      "key": "d2",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.78,
+      "final_train": 0.77,
+      "final_dev": 0.77,
+      "learner_gpu_s": 585.3756384100998,
+      "elapsed_s": 2426.323167363,
+      "flops": 154192710000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d3_s1",
+      "key": "d3",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.91,
+      "final_train": 0.91,
+      "final_dev": 0.93,
+      "learner_gpu_s": 1033.812517601531,
+      "elapsed_s": 3493.30257136,
+      "flops": 201350310000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d3_s4",
+      "key": "d3",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.83,
+      "final_train": 0.88,
+      "final_dev": 0.86,
+      "learner_gpu_s": 599.8992098412709,
+      "elapsed_s": 2435.140086404,
+      "flops": 201350310000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d3_s5",
+      "key": "d3",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.86,
+      "final_train": 0.89,
+      "final_dev": 0.85,
+      "learner_gpu_s": 625.4215505024185,
+      "elapsed_s": 2488.745453978,
+      "flops": 201350310000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d4_s1",
+      "key": "d4",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.88,
+      "final_train": 0.89,
+      "final_dev": 0.88,
+      "learner_gpu_s": 985.5691681376193,
+      "elapsed_s": 3451.225443122,
+      "flops": 248507910000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d4_s2",
+      "key": "d4",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.92,
+      "final_train": 0.91,
+      "final_dev": 0.91,
+      "learner_gpu_s": 723.9605830656365,
+      "elapsed_s": 2604.321538925,
+      "flops": 248507910000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d4_s4",
+      "key": "d4",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.86,
+      "final_train": 0.89,
+      "final_dev": 0.9,
+      "learner_gpu_s": 818.5835631677182,
+      "elapsed_s": 2696.601646184,
+      "flops": 248507910000000.0
+    },
+    {
+      "dir": "lab_fixed_w400_d4_s5",
+      "key": "d4",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.84,
+      "final_train": 0.87,
+      "final_dev": 0.83,
+      "learner_gpu_s": 611.4229726007907,
+      "elapsed_s": 2480.718449145,
+      "flops": 248507910000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g1000k-2000k_s1",
+      "key": "grow",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.78,
+      "final_train": 0.8,
+      "final_dev": 0.76,
+      "learner_gpu_s": 970.182662310428,
+      "elapsed_s": 3452.175685118,
+      "flops": 154075110000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g1000k-2000k_s5",
+      "key": "grow",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.76,
+      "final_train": 0.73,
+      "final_dev": 0.72,
+      "learner_gpu_s": 686.5318389517488,
+      "elapsed_s": 2582.454484557,
+      "flops": 154075110000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g500k-1000k_s1",
+      "key": "growE",
+      "seed": 1,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.82,
+      "final_train": 0.82,
+      "final_dev": 0.82,
+      "learner_gpu_s": 746.8035281926859,
+      "elapsed_s": 2588.06802817,
+      "flops": 177595110000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g500k-1000k_s2",
+      "key": "growE",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.9,
+      "final_train": 0.87,
+      "final_dev": 0.83,
+      "learner_gpu_s": 773.0751751754433,
+      "elapsed_s": 2642.550408098,
+      "flops": 177595110000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g500k-1000k_s3",
+      "key": "growE",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.84,
+      "final_train": 0.88,
+      "final_dev": 0.87,
+      "learner_gpu_s": 614.7530365323182,
+      "elapsed_s": 2445.736062888,
+      "flops": 177595110000000.0
+    },
+    {
+      "dir": "lab_grow_w400_d1_g500k-1000k_s5",
+      "key": "growE",
+      "seed": 5,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.8,
+      "final_train": 0.82,
+      "final_dev": 0.78,
+      "learner_gpu_s": 593.1904748282395,
+      "elapsed_s": 2422.82563209,
+      "flops": 177595110000000.0
+    },
+    {
+      "dir": "modal_fixed_w400_d1_s3",
+      "key": "d1",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.67,
+      "final_train": 0.64,
+      "final_dev": 0.62,
+      "learner_gpu_s": 677.6592948019493,
+      "elapsed_s": 3866.906766686,
+      "flops": 107035110000000.0
+    },
+    {
+      "dir": "modal_fixed_w400_d2_s3",
+      "key": "d2",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.82,
+      "final_train": 0.85,
+      "final_dev": 0.81,
+      "learner_gpu_s": 641.8068939760334,
+      "elapsed_s": 3633.166585689,
+      "flops": 154192710000000.0
+    },
+    {
+      "dir": "modal_fixed_w400_d3_s2",
+      "key": "d3",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.81,
+      "final_train": 0.84,
+      "final_dev": 0.81,
+      "learner_gpu_s": 696.2351432349027,
+      "elapsed_s": 3806.614640517,
+      "flops": 201350310000000.0
+    },
+    {
+      "dir": "modal_fixed_w400_d3_s3",
+      "key": "d3",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.78,
+      "final_train": 0.85,
+      "final_dev": 0.78,
+      "learner_gpu_s": 689.6443429760207,
+      "elapsed_s": 3718.542316035,
+      "flops": 201350310000000.0
+    },
+    {
+      "dir": "modal_fixed_w400_d4_s3",
+      "key": "d4",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.9,
+      "final_train": 0.92,
+      "final_dev": 0.91,
+      "learner_gpu_s": 737.3383801980209,
+      "elapsed_s": 3830.163226807,
+      "flops": 248507910000000.0
+    },
+    {
+      "dir": "modal_grow_w400_d1_g1000k-2000k_s3",
+      "key": "grow",
+      "seed": 3,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.82,
+      "final_train": 0.83,
+      "final_dev": 0.81,
+      "learner_gpu_s": 704.8354082289766,
+      "elapsed_s": 3902.576423107,
+      "flops": 154075110000000.0
+    },
+    {
+      "dir": "pro16_fixed_w400_d1_s2",
+      "key": "d1",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.72,
+      "final_train": 0.72,
+      "final_dev": 0.7,
+      "learner_gpu_s": 545.6740528792143,
+      "elapsed_s": 2045.054283189,
+      "flops": 107035110000000.0
+    },
+    {
+      "dir": "wsl_fixed_w400_d2_s2",
+      "key": "d2",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.79,
+      "final_train": 0.8,
+      "final_dev": 0.8,
+      "learner_gpu_s": 1302.5540050760108,
+      "elapsed_s": 2944.314736377,
+      "flops": 154192710000000.0
+    },
+    {
+      "dir": "wsl_grow_w400_d1_g1000k-2000k_s2",
+      "key": "grow",
+      "seed": 2,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.83,
+      "final_train": 0.85,
+      "final_dev": 0.8,
+      "learner_gpu_s": 1309.4521692138385,
+      "elapsed_s": 2945.587573261,
+      "flops": 154075110000000.0
+    },
+    {
+      "dir": "wsl_grow_w400_d1_g1000k-2000k_s4",
+      "key": "grow",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.76,
+      "final_train": 0.81,
+      "final_dev": 0.8,
+      "learner_gpu_s": 1220.063560438969,
+      "elapsed_s": 2720.877396502,
+      "flops": 154075110000000.0
+    },
+    {
+      "dir": "wsl_grow_w400_d1_g500k-1000k_s4",
+      "key": "growE",
+      "seed": 4,
+      "status": "completed",
+      "steps": 3000000,
+      "final_test": 0.84,
+      "final_train": 0.88,
+      "final_dev": 0.86,
+      "learner_gpu_s": 1230.965940418966,
+      "elapsed_s": 2714.792346455,
+      "flops": 177595110000000.0
+    }
+  ],
+  "final_by_key": [
+    {
+      "key": "d1",
+      "train": 63.6,
+      "test": 64.2,
+      "n": 5
+    },
+    {
+      "key": "d2",
+      "train": 81.4,
+      "test": 80.8,
+      "n": 5
+    },
+    {
+      "key": "d3",
+      "train": 87.4,
+      "test": 83.8,
+      "n": 5
+    },
+    {
+      "key": "d4",
+      "train": 89.6,
+      "test": 88.0,
+      "n": 5
+    },
+    {
+      "key": "grow",
+      "train": 80.4,
+      "test": 79.0,
+      "n": 5
+    },
+    {
+      "key": "growE",
+      "train": 85.4,
+      "test": 84.0,
+      "n": 5
+    }
+  ],
+  "strategies": {
+    "Grid search (4 runs)": {
+      "n": 5,
+      "test": 0.89,
+      "steps": 12000000.0,
+      "gpu_s": 2991.25246480117,
+      "flops": 711086040000000.0,
+      "picks": [
+        "d3",
+        "d4",
+        "d4",
+        "d4",
+        "d3"
+      ]
+    },
+    "Successive halving": {
+      "n": 5,
+      "test": 0.8520000000000001,
+      "steps": 5500000.0,
+      "gpu_s": 1393.4480969737724,
+      "flops": 359710715000000.0,
+      "picks": [
+        "d3",
+        "d4",
+        "d3",
+        "d2",
+        "d3"
+      ]
+    },
+    "Best depth (oracle)": {
+      "n": 5,
+      "test": 0.89,
+      "steps": 3000000.0,
+      "gpu_s": 772.1482134384607,
+      "flops": 229644870000000.0,
+      "picks": [
+        "d3",
+        "d4",
+        "d4",
+        "d4",
+        "d3"
+      ]
+    },
+    "Random depth": {
+      "n": 5,
+      "test": 0.792,
+      "steps": 3000000.0,
+      "gpu_s": 747.8131162002925,
+      "flops": 177771510000000.0,
+      "picks": [
+        "avg",
+        "avg",
+        "avg",
+        "avg",
+        "avg"
+      ]
+    },
+    "Default depth 2": {
+      "n": 5,
+      "test": 0.808,
+      "steps": 3000000.0,
+      "gpu_s": 773.1000791921979,
+      "flops": 154192710000000.0,
+      "picks": [
+        "d2",
+        "d2",
+        "d2",
+        "d2",
+        "d2"
+      ]
+    },
+    "Growth @1M,2M": {
+      "n": 5,
+      "test": 0.7899999999999998,
+      "steps": 3000000.0,
+      "gpu_s": 828.3572506310884,
+      "flops": 154075110000000.0,
+      "picks": [
+        "grow",
+        "grow",
+        "grow",
+        "grow",
+        "grow"
+      ]
+    },
+    "Growth @0.5M,1M": {
+      "n": 5,
+      "test": 0.8400000000000001,
+      "steps": 3000000.0,
+      "gpu_s": 681.9555536821717,
+      "flops": 177595110000000.0,
+      "picks": [
+        "growE",
+        "growE",
+        "growE",
+        "growE",
+        "growE"
+      ]
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+ "slides": [
+  {
+   "kind": "title",
+   "title": "Grow instead of search?",
+   "subtitle": "Function-preserving depth growth for multi-task PPO on Meta-World MT10",
+   "footer": "COMP9501 Advanced Machine Learning  ·  exploratory study",
+   "notes": "We ask a practical question: if you do not know how deep your policy network should be, can you grow it during one training run instead of training several networks and picking the best?"
+  },
+  {
+   "title": "Picking a depth usually costs K training runs",
+   "figures": [
+    "static/schematic_search_vs_grow.png"
+   ],
+   "notes": "The standard answer to an unknown architecture hyperparameter is search: train one network per depth and keep the best one on validation. That multiplies the cost by K. Growth instead starts shallow and inserts layers during a single run."
+  },
+  {
+   "title": "Ten robot tasks, goals held out from training",
+   "figures": [
+    "static/goal_split.png"
+   ],
+   "stats": [
+    [
+     "10",
+     "MT10 manipulation tasks"
+    ],
+    [
+     "3M",
+     "environment steps per run"
+    ],
+    [
+     "5",
+     "seeds per configuration"
+    ]
+   ],
+   "caption": "Per task: 50 goal variants split 30 / 10 / 10. PPO + PopArt, actor width 400, depth 1–4. 43 runs in total.",
+   "notes": "Each Meta-World task has 50 goal variants. We train on 30, use 10 for model selection and report success on 10 held-out goals. Same PPO recipe for every run; only the actor depth changes."
+  },
+  {
+   "title": "An identity layer adds depth without moving the policy",
+   "figures": [
+    "static/pilot_insertion.png"
+   ],
+   "caption": "After a ReLU, ReLU(I·h) = h. Pilot: 1 seed, 3 tasks, 60 episodes.",
+   "notes": "The key trick: insert a new layer initialised to the identity right after a ReLU. Because activations are non-negative, the new layer passes them through unchanged, so the policy is exactly the same at the moment of insertion (KL zero). A randomly initialised layer instead destroys the policy, success drops to zero."
+  },
+  {
+   "title": "Held-out goals are not harder than training goals",
+   "figures": [
+    "w400/final_by_depth.png"
+   ],
+   "notes": "First finding: success on held-out goals matches success on training goals, within a few points. The goal variants interpolate each other, so this split does not make the benchmark harder. The real difficulty knob here is depth."
+  },
+  {
+   "title": "Depth matters: 1 layer is far behind",
+   "figures": [
+    "w400/curves_success_test.png"
+   ],
+   "notes": "Second finding: depth matters. One hidden layer plateaus near two thirds success; three or four layers reach the high eighties. Growing late follows the depth-1 curve too long. Growing early catches up with the deep networks."
+  },
+  {
+   "title": "Growing early matches successive halving for one run's cost",
+   "figures": [
+    "w400/strategy_panel.png"
+   ],
+   "notes": "Main result, paired by seed, n=5. Grid search finds the best depth but costs four runs, 12M steps. Successive halving, simulated on the same learning curves, costs 5.5M steps and reaches 85%. Growing early (layers added at 0.5M and 1M steps) costs one run, 3M steps, and reaches 84%: about the same as successive halving, above the default depth 2 or a random depth, but 5 points below the best fixed depth. Growing late is no better than a random depth."
+  },
+  {
+   "title": "On networks this small, GPU time does not track compute",
+   "figures": [
+    "w400/compute_vs_gpu.png"
+   ],
+   "caption": "Depth 4 needs 2.3× the FLOPs of depth 1, but GPU time is dominated by kernel-launch overhead and machine load.",
+   "notes": "We also logged synchronized GPU time for inference and updates. FLOPs grow with depth as expected, but measured GPU time barely changes and varies more with how busy the shared server was. So for these small policies we compare cost in environment steps and FLOPs, not GPU seconds."
+  },
+  {
+   "kind": "closing",
+   "title": "Takeaways",
+   "points": [
+    [
+     "1",
+     "An identity layer grows a policy without breaking it"
+    ],
+    [
+     "2",
+     "Depth matters on MT10: 64% → 88%; held-out goals add no difficulty"
+    ],
+    [
+     "3",
+     "Grow early ≈ successive halving at 55% of the cost; still 5 points below the best depth"
+    ]
+   ],
+   "notes": "Limitations: five seeds, one benchmark, a fixed growth schedule rather than an adaptive trigger. At width 128 growth did not help (backup slide). GPU time on such small networks is dominated by overhead, so costs are in environment steps and FLOPs."
+  },
+  {
+   "title": "Backup: at width 128, growth does not help",
+   "figures": [
+    "w128/strategy_panel.png"
+   ],
+   "caption": "Width-128 actor, n=2 seeds. Growing to depth 3 stays below a random depth.",
+   "notes": "Backup. With a narrow actor, growing to three layers did not recover the performance of the best fixed depth. Only two seeds, so treat as a warning sign rather than a result."
+  },
+  {
+   "title": "Backup: learning curves on training and validation goals",
+   "figures": [
+    "w400/curves_success_train.png",
+    "w400/curves_success_dev.png"
+   ],
+   "notes": "Backup. Training-goal and validation-goal curves look the same as the held-out curves."
+  }
+ ]
+}

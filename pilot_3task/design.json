@@ -1,0 +1,23 @@
+{
+  "scope": "Fresh three-task subset of MT10 policy insertion; no selector or whole-benchmark claim",
+  "seed": 17701,
+  "benchmark_seed": 17702,
+  "insert_seed": 17703,
+  "parent_steps": 999990,
+  "continuation_steps_each": 299997,
+  "assessment_goals_per_task": 20,
+  "hard_wall_seconds": 3000,
+  "arms": [
+    "keep",
+    "identity",
+    "ordinary"
+  ],
+  "primary": "fixed disjoint task goal-panel success immediately and at 299,997 learner transitions",
+  "probe": "parent-to-arm diagonal Gaussian KL over same fresh parent-train observations before updates",
+  "caveat": "20 fixed held-out goal definitions per task, other 30 for learning; no unseen-task generalization, n=1",
+  "tasks": [
+    "reach-v3",
+    "button-press-topdown-v3",
+    "drawer-open-v3"
+  ]
+}
