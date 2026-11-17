@@ -246,7 +246,9 @@ def strategy_panel(res, axis='steps', unit=1e6, xl='Total environment steps (M)'
         a.text(t.mean() + se + 0.5, y, f'{t.mean():.0f}', color=INK, fontsize=12, va='center')
         c = np.mean([r[axis] for r in res[k]]) / unit
         b.barh(y, c, 0.5, color=cols[k], edgecolor='none')
-        b.text(c + 0.15, y, f'{c:.1f}' if c < 10 else f'{c:.0f}', va='center', fontsize=12, color=INK)
+        cmax = max(np.mean([r[axis] for r in res[kk]]) / unit for kk in rows)
+        b.text(c + 0.012 * cmax, y, f'{c:.2f}' if cmax < 2 else (f'{c:.1f}' if c < 10 else f'{c:.0f}'),
+               va='center', fontsize=12, color=INK)
     a.set_yticks(range(len(rows)), [names[k] for k in rows][::-1])
     a.set_xlabel(f'Held-out success (%)   mean ± s.e., n={n} seeds'); lo = min(np.mean([r['test'] for r in res[k]]) for k in rows) * 100
     a.set_xlim(5 * np.floor((lo - 6) / 5), 95)
@@ -274,6 +276,20 @@ def compute_vs_gpu(runs):
     for ax in (a, b):
         ax.set_xticks(range(len(ks)), lab); ax.grid(axis='x', visible=False)
     fig.savefig(OUT / 'compute_vs_gpu.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
+
+
+def flops_per_run(runs):
+    fin = [r for r in runs if r['done']]
+    ks = keys_of(fin)
+    lab = [{'grow': 'Grow late\n1→3', 'growE': 'Grow early\n1→3'}.get(k, f'Depth {k[1:]}') for k in ks]
+    fig, ax = plt.subplots(figsize=(8.5, 4.6))
+    for i, k in enumerate(ks):
+        f = np.mean([flops(r) for r in fin if r['key'] == k]) / 1e15
+        ax.bar(i, f, 0.6, color=color(k), edgecolor='none')
+        ax.text(i, f + 0.004, f'{f:.2f}', ha='center', va='bottom', fontsize=12, color=INK)
+    ax.set_xticks(range(len(ks)), lab); ax.grid(axis='x', visible=False)
+    ax.set_ylabel('Learner compute per 3M-step run (PFLOP)')
+    fig.savefig(OUT / 'flops_per_run.png', dpi=200, bbox_inches='tight', pad_inches=0.15); plt.close(fig)
 
 
 def per_task(runs):
@@ -335,7 +351,7 @@ def main():
         rows = final_by_depth(sub) if any(r['done'] for r in sub) else []
         res = cost_frontier(sub) if any(r['done'] for r in sub) else {}
         compute_vs_gpu(sub)
-        per_task(sub); growth_traj(sub)
+        per_task(sub); growth_traj(sub); flops_per_run(sub)
         if res:
             strategy_panel(res)
             strategy_panel(res, 'flops', 1e15, 'Total learner compute (PFLOP)', 'strategy_panel_flops.png')
