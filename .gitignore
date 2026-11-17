@@ -18,3 +18,4 @@ report/*.log
 report/*.bbl
 report/*.blg
 report/*.out
+deck/qa3/

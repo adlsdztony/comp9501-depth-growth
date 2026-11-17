@@ -102,12 +102,13 @@ for sp in SPEC['slides']:
     elif kind == 'closing':
         bg(s, NAVY)
         textbox(s, sp['title'], M, Inches(0.6), W - 2 * M, Inches(0.8), 34, WHITE, True)
-        y = Inches(1.75)
+        y = Inches(1.9)
+        step = min(Inches(1.65), Inches(4.6) // len(sp['points']))
         for num, head, body in sp['points']:
             textbox(s, num, M, y, Inches(0.8), Inches(0.8), 36, ORANGE, True)
             textbox(s, head, M + Inches(0.9), y + Inches(0.02), Inches(11), Inches(0.5), 22, WHITE, True)
             textbox(s, body, M + Inches(0.9), y + Inches(0.5), Inches(11), Inches(0.6), 16, ICE)
-            y += Inches(1.3)
+            y += step
         if sp.get('footer'):
             textbox(s, sp['footer'], M, H - Inches(0.8), W - 2 * M, Inches(0.4), 14, MUTED)
     else:
@@ -124,8 +125,16 @@ for sp in SPEC['slides']:
                 hh = (avail - Inches(0.2)) // len(figs)
                 for i, f in enumerate(figs):
                     picture(s, FIG / f, M, TOP + i * (hh + Inches(0.2)), fw, hh)
-            tx = M + fw + Inches(0.4)
-            textbox(s, sp['bullets'], tx, TOP + Inches(0.1), W - M - tx, avail, sp.get('size', 17), INK, bullets=True, space=10)
+            tx = M + fw + Inches(0.5)
+            if sp.get('stats'):
+                n = len(sp['stats']); step = min(Inches(1.55), avail // n)
+                y = TOP + (avail - step * n) // 2
+                for i, (big, label) in enumerate(sp['stats']):
+                    textbox(s, big, tx, y, W - M - tx, Inches(0.8), 40, ORANGE if i == sp.get('accent', 0) else NAVY, True)
+                    textbox(s, label, tx, y + Inches(0.78), W - M - tx, Inches(0.6), 15, INK2)
+                    y += step
+            else:
+                textbox(s, sp['bullets'], tx, TOP + Inches(0.1), W - M - tx, avail, sp.get('size', 17), INK, bullets=True, space=10)
         elif kind == 'figure':
             bh = Inches(0.45) * len(sp.get('bullets', [])) if sp.get('bullets_below') else 0
             figs = sp['figures']; gap = Inches(0.3)
@@ -137,7 +146,7 @@ for sp in SPEC['slides']:
         elif kind == 'cards':
             cards = sp['cards']; n = len(cards); gap = Inches(0.35)
             cw = (W - 2 * M - gap * (n - 1)) // n
-            ch = avail - Inches(0.1)
+            ch = Inches(sp['card_h']) if sp.get('card_h') else avail - Inches(0.1)
             for i, (head, body) in enumerate(cards):
                 x = M + i * (cw + gap)
                 rect(s, x, TOP, cw, ch, TINT)
